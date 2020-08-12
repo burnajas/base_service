@@ -1,0 +1,15 @@
+FROM mysql:8.0.21
+# Define database arguments that can be passed in from compose file
+ARG ROOT_PASSWORD
+ARG DATABASE
+ARG USER
+ARG PASSWORD
+
+# Now add arguments to environment
+ENV MYSQL_ROOT_PASSWORD=$ROOT_PASSWORD
+ENV MYSQL_DATABASE=$DATABASE
+ENV MYSQL_USER=$USER
+ENV MYSQL_PASSWORD=$PASSWORD
+
+# Get schema into container to build database
+ADD ./schemas/mysql/*.sql /docker-entrypoint-initdb.d/

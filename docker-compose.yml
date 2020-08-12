@@ -32,13 +32,18 @@ services:
 #    ports:
 #      - "5050:5050"
 #    command: [python, 'auth.py']
-#  app:
-#    build:
-#      context: ./app
-#      dockerfile: Dockerfile-MySQL
-#    ports:
-#      - "5000:5000"
-#    command: [python, 'app.py']
+  app:
+    build:
+      context: ./app
+      args:
+        ENVIRONMENT_TYPE: "production"
+        DATABASE_PASSWORD: 'db_password'
+        DATABASE: 'app_db'
+        DATABASE_USERNAME: 'db_user'
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    command: [python, 'app.py']
   db:
     build:
       context: ./database
@@ -47,6 +52,7 @@ services:
         PASSWORD: 'db_password'
         DATABASE: 'app_db'
         USER: 'db_user'
+#      dockerfile: Dockerfile-MySQL
       dockerfile: Dockerfile-Postgres
 
 #    networks:

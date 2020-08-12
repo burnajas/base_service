@@ -14,14 +14,19 @@ app = Flask(__name__)
 DATABASE_USERNAME = os.environ.get('DATABASE_USERNAME')
 DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD')
 DATABASE_URL = os.environ.get('DATABASE_URL')
+DATABASE = os.environ.get('DATABASE')
 
 # Configure database depending on environment
 db = None
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 if os.environ.get('ENVIRONMENT_TYPE') == 'production':
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{}:{}@{}'.format(DATABASE_USERNAME, DATABASE_PASSWORD,
-                                                                      DATABASE_URL)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://{user}:{pw}@{url}:5432/{db}'.format(user=DATABASE_USERNAME,
+                                                                                                 pw=DATABASE_PASSWORD,
+                                                                                                 url=DATABASE_URL,
+                                                                                                 db=DATABASE)
+    # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://{}:{}@{}'.format(DATABASE_USERNAME, DATABASE_PASSWORD,
+    #                                                                   DATABASE_URL)
     db = SQLAlchemy(app)
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
@@ -47,6 +52,7 @@ def alive():
     An endpoint to work with.
     :return:
     '''
+
     test_1 = Test(name="Name")
     logger.info("{}".format(test_1))
     db.session.add(test_1)

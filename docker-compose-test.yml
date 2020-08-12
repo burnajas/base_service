@@ -1,0 +1,61 @@
+version: '3.2'
+services:
+#  web:
+#    build:
+#      context: ./web
+#      dockerfile: Dockerfile-MySQL
+#    volumes:
+#      - type: bind
+#        source: ./web/app
+#        target: /www/data
+#    ports:
+#     - "80:80"
+#     - "443:443"
+#    environment:
+#     - NGINX_HOST=dev.tfpportal.co.uk
+#     - NGINX_PORT=443
+##    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/mysite.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
+#    command: [nginx-debug, '-g', 'daemon off;']
+##    networks:
+##      - gateway
+#    links:
+#      - auth
+#      - app
+#  auth:
+#    build:
+#      context: ./auth
+#      dockerfile: Dockerfile-MySQL
+#    volumes:
+#      - type: bind
+#        source: ./auth/code
+#        target: /usr/src/app
+#    ports:
+#      - "5050:5050"
+#    command: [python, 'auth.py']
+  app:
+    build:
+      context: ./app
+      args:
+        ENVIRONMENT_TYPE: 'test'
+        DATABASE_PASSWORD: ''
+        DATABASE: ''
+        DATABASE_USER: ''
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    command: [python, 'app.py']
+  db:
+    build:
+      context: ./database
+      args:
+        ROOT_PASSWORD: 'db_root_password'
+        PASSWORD: 'db_password'
+        DATABASE: 'app_db'
+        USER: 'db_user'
+      dockerfile: Dockerfile-MySQL
+#      dockerfile: Dockerfile-Postgres
+
+#    networks:
+#      - gateway
+#networks:
+#  gateway:
