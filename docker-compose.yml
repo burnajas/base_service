@@ -3,7 +3,7 @@ services:
 #  web:
 #    build:
 #      context: ./web
-#      dockerfile: Dockerfile
+#      dockerfile: Dockerfile-MySQL
 #    volumes:
 #      - type: bind
 #        source: ./web/app
@@ -24,7 +24,7 @@ services:
 #  auth:
 #    build:
 #      context: ./auth
-#      dockerfile: Dockerfile
+#      dockerfile: Dockerfile-MySQL
 #    volumes:
 #      - type: bind
 #        source: ./auth/code
@@ -32,13 +32,23 @@ services:
 #    ports:
 #      - "5050:5050"
 #    command: [python, 'auth.py']
-  app:
+#  app:
+#    build:
+#      context: ./app
+#      dockerfile: Dockerfile-MySQL
+#    ports:
+#      - "5000:5000"
+#    command: [python, 'app.py']
+  db:
     build:
-      context: ./app
-      dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
-    command: [python, 'app.py']
+      context: ./database
+      args:
+        ROOT_PASSWORD: 'db_root_password'
+        PASSWORD: 'db_password'
+        DATABASE: 'app_db'
+        USER: 'db_user'
+      dockerfile: Dockerfile-Postgres
+
 #    networks:
 #      - gateway
 #networks:
